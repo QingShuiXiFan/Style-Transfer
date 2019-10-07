@@ -1,0 +1,28 @@
+{% extends "password_reset/base.html" %}{% load i18n %}
+
+{% block content %}
+    <div class="reset">
+        <div class="row text-center vertical-middle-sm">
+            {% if invalid %}{% url "password_reset_recover" as recovery_url %}
+                <p>{% blocktrans %}抱歉，这个密码重置链接已经失效，你可以
+                    <a href="{{ recovery_url }}">重新发送链接</a>.{% endblocktrans %}</p>
+            {% else %}
+                <p>{% blocktrans %}你好， <strong>{{ username }}</strong> 请输入你的新密码：{% endblocktrans %}</p>
+                <form method="post" class="form-horizontal" action="{% url "password_reset_reset" token %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_password1" class="col-md-5 control-label"><span
+                                class="m_25">输入新密码：</span></label>
+                        <div class="col-md-6 text-left">{{ form.password1 }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password2" class="col-md-5 control-label"><span
+                                class="m_25">再次输入密码：</span></label>
+                        <div class="col-md-6 text-left">{{ form.password2 }}</div>
+                    </div>
+                    <p><input type="submit" class="acount-btn" value="{% trans "设置新密码" %}"></p>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

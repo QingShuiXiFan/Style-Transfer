@@ -1,0 +1,14 @@
+{% extends "password_reset/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "邮件已发送" %}{% endblock %}
+
+{% block content %}
+    <div class="reset_sent">
+        <div class="row text-center vertical-middle-sm">
+            <p>{% blocktrans %}一封邮件已经发送至 <strong>{{ email }}</strong>。
+                请在浏览器里打开邮件里的链接重置密码.{% endblocktrans %}</p>
+            <a href="{% url 'main:user_login' %}"><span class="m_14">------点此返回登录页面------</span></a>
+        </div>
+    </div>
+{% endblock %}

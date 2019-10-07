@@ -1,0 +1,24 @@
+{% extends "password_reset/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "密码重置" %}{% endblock %}
+
+{% block content %}
+    <div class="recovery">
+        <div class="row text-center vertical-middle-sm">
+            <h4 class="tz-title-5 tzcolor-blue">
+                <p class="tzweight_Bold"><span class="m_11">密码重置</span></p>
+            </h4>
+            <span class="m_14">请在下方的文本框中输入你的用户名或者电子邮箱，<br>我们会发送一封含有密码重置链接的邮件致您的邮箱</span>
+            <form class="form-horizontal" method="post" action="{{ url }}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_username_or_email" class="col-md-5 control-label"><span
+                            class="m_25">用户名或邮箱：</span></label>
+                    <div class="col-md-6 text-left">{{ form.username_or_email }}</div>
+                </div>
+                <input type="submit" class="acount-btn" value="提交">
+            </form>
+        </div>
+    </div>
+{% endblock %}

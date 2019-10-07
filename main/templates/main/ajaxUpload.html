@@ -1,0 +1,150 @@
+{% extends "base-main.html" %}
+{% load staticfiles %}
+{% block title %}ajax上传测试{% endblock %}
+
+{% block content %}
+    <form>{% csrf_token %}
+        <input type="file" id="file" name="file" accept="image/*" style="width: 250px">
+    </form>
+    <img src="" alt="显示图片" id="show_img">
+    <script type="text/javascript">
+        $('#file').change(function () {
+
+            //若图片大于500k，则调用压缩程序，调整至500k
+            var size = $("#file")[0].files[0].size;
+            var threshold = 500000;
+            if(size>threshold) {
+                var factor = Math.sqrt(threshold/size);
+                compressAndSendAjax(factor);
+            }
+            else {
+                compressAndSendAjax(1);
+            }
+
+        });
+
+        // 对图片进行压缩
+        function compressAndSendAjax(compress_factor) {
+            let fileObj = document.getElementById('file').files[0]; //上传文件的对象
+            //获取文件名
+            var file = $('#file').val();
+            var fileName = getFileName(file);
+
+            let reader = new FileReader();
+            reader.readAsDataURL(fileObj);
+            reader.onload = function (e) {
+                let image = new Image(); //新建一个img标签（还没嵌入DOM节点)
+                image.src = e.target.result;
+                image.onload = function () {
+                    let canvas = document.createElement('canvas'),
+                        context = canvas.getContext('2d'),
+                        imageWidth = image.width * compress_factor,
+                        imageHeight = image.height * compress_factor,
+                        data = '';
+
+                    canvas.width = imageWidth;
+                    canvas.height = imageHeight;
+
+                    context.drawImage(image, 0, 0, imageWidth, imageHeight);
+                    data = canvas.toDataURL('image/jpeg');
+
+                    //压缩完成，转换为File对象，并ajax发送
+                    document.getElementById('show_img').src = data;
+                    file_obj = dataURLtoFile(data, fileName);
+
+                    var form_data = new FormData();
+                    form_data.append('file_obj', file_obj);
+
+                    $.ajax({
+                        url: '{% url "main:ajaxUpload" %}',
+                        type: 'POST',
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            //用户没有选择文件
+                            if (data.status == "no_file") {
+                                var alert_no_file = jqueryAlert({
+                                    'icon': '{% static "images/error.png" %}',
+                                    'content': '请选择图片',
+                                    'closeTime': 2000,
+                                });
+                                return alert_no_file.show();
+                            } else if (data.status == "success") {
+                                var alert_success = jqueryAlert({
+                                    'icon': '{% static "images/right.png" %}',
+                                    'content': '上传成功',
+                                    'closeTime': 2000,
+                                });
+                                var file_name = data.picName;
+                                var picPath = "{% static 'media/upload/tmpImages/' %}" + file_name;
+                                $('#show_img').attr('src', picPath);
+                                return alert_success.show();
+                            }
+                        },
+                        error: function (data) {
+                            alert("error")
+                        }
+                    })
+                };
+            }
+        }
+
+        //获得filename
+        function getFileName(o) {
+            var pos = o.lastIndexOf("\\");
+            return o.substring(pos + 1);
+        }
+
+        //dataurl转file
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {type: mime});
+        }
+
+
+        //点击图片弹出新网页观看
+        $('img:not(.logo_image)').click(function () {
+            var path = $(this)[0].src;
+            window.open(path);
+        });
+    </script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,51 @@
+{% extends "base-main.html" %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    {#    <div class="about">#}
+    {#         <div class="container">#}
+    {#            <h1>登录<span class="m_1"><br>中心</span></h1>#}
+    {#        </div>#}
+    {#    </div>#}
+    <div class="account_grid">
+        <div class="container">
+            <div class="col-md-6 login-left">
+                <h4 class="tz-title-5 tzcolor-blue">
+                    <p class="tzweight_Bold"><span class="m_20">新用户</span></p>
+                </h4>
+                <p>通过注册成为我们的会员，你将可以免费享受个人模板创建，云端存储等功能。</p>
+                <a class="acount-btn" href="{% url 'main:register' %}">创建账号</a>
+            </div>
+            <div class="col-md-6 login-right">
+                <h4 class="tz-title-5 tzcolor-blue">
+                    <p class="tzweight_Bold"><span class="m_20">已注册的用户</span></p>
+                </h4>
+
+                <p>如果你已经拥有账号，请登录。</p>
+                <form class="form-horizontal" action="." method="post">{% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}" class="control-label"><span
+                                class="m_25">电子邮箱地址<label>*</label></span></label>
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}" class="control-label"><span class="m_25">密码<label>*</label></span></label>
+                        {{ form.password }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.captcha.label_tag }}
+                        {{ form.captcha }}
+                    </div>
+                    {% if message %}
+                        <div class="alert alert-warning">{{ message }}</div>
+                    {% endif %}
+                    <input type="submit" class="account-btn" value="登录">
+                    <a class="forgot" href="{% url 'password_reset_recover' %}">忘记密码？</a>
+                </form>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+{% endblock %}
+

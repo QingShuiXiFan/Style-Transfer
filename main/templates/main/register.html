@@ -1,0 +1,41 @@
+{% extends "base-main.html" %}
+
+{% block title %}注册{% endblock %}
+
+{% block content %}
+    {#    <div class="about">#}
+    {#	 <div class="container">#}
+    {#		<h1>注册<span class="m_1"><br>中心</span></h1>#}
+    {#	</div>#}
+    {#    </div>#}
+    <div class="register">
+        <div class="row text-center vertical-middle-sm">
+            <h2 class="tzweight_Bold" style="color: #556b72;">注册</h2>
+            <p>如果你已经注册，请<strong><a href="{% url 'main:user_login' %}">登录</a></strong></p>
+            <form class="form-horizontal" action="/main/register/" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="col-md-5 control-label"><span class="m_25">用户名</span></label>
+                    <div class="col-md-6 text-left">{{ form.username }}</div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="col-md-5 control-label"><span class="m_25">电子邮箱</span></label>
+                    <div class="col-md-6 text-left">{{ form.email }}</div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}" class="col-md-5 control-label"><span class="m_25">密码</span></label>
+                    <div class="col-md-6 text-left">{{ form.password }}</div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}" class="col-md-5 control-label"><span class="m_25">再次输入密码</span></label>
+                    <div class="col-md-6 text-left">{{ form.password2 }}</div>
+                </div>
+                {% if message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
+                <input type="submit" class="acount-btn" value="提交">
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

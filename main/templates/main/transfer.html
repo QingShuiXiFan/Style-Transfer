@@ -1,0 +1,381 @@
+{% extends "base-main.html" %}
+{% load staticfiles %}
+{% block title %}图像风格迁移{% endblock %}
+
+{% block content %}
+    <div class="transfer">
+        <div class="transfer-left col-md-4">
+            <form>{% csrf_token %}
+                <span class="m_20">风格迁移操作步骤：</span>
+                <p><span class="m_25"><strong>1、</strong>在本地选择任何你想进行风格迁移的图片：</span><input type="file" id="file"
+                                                                                          name="file" accept="image/*"
+                                                                                          style="width: 250px"></p>
+            </form>
+            <p><span class="m_25"><strong>2、</strong>选择风格模板：</span>
+                <label><select name="style_name" id="select_style">
+                    <option value="la_muse" {% if img_style_name == "la_muse" %} selected {% endif %}>la muse
+                    </option>
+                    <option value="rain_princess" {% if img_style_name == "rain_princess" %} selected {% endif %}>
+                        rain princess
+                    </option>
+                    <option value="the_scream" {% if img_style_name == "the_scream" %} selected {% endif %}>the
+                        scream
+                    </option>
+                    <option value="the_shipwreck_of_the_minotaur"
+                            {% if img_style_name == "the_shipwreck_of_the_minotaur" %} selected {% endif %}>the
+                        shipwreck of the minotaur
+                    </option>
+                    <option value="udnie" {% if img_style_name == "udnie" %} selected {% endif %}>udnie</option>
+                    <option value="wave" {% if img_style_name == "wave" %} selected {% endif %}>wave</option>
+                    <option value="sketch" {% if img_style_name == "sketch" %} selected {% endif %}>sketch</option>
+                </select></label>
+            <div class="show_style_img">
+                <img src="{% static 'images/' %}{{ img_style_name }}.jpg" alt="请选择风格图片" id="style_img"
+                     onerror="this.src='{% static "images/la_muse.jpg" %}'">
+            </div>
+            <p>
+                <span class="m_25"><strong>3、</strong>一键风格化：</span>
+                <input type="button" value="确认" name="stylize" id="stylize">
+            </p>
+        </div>
+        <div class="transfer-right col-md-8">
+            <div class="showImg col-md-4">
+                <div class="before_upload">
+                    <span class="m_1">请上传图片</span>
+                    <img src="{% static 'images/jpg.png' %}">
+                    <img src="{% static 'images/png.png' %}">
+                </div>
+                <img src="" alt="请上传图片" id="show_img" style="display: none;">
+                <div class="progress progress-striped active" id="progress_bar_content">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+            <div class="showImg col-md-4">
+                <div class="before_generate">
+                    <span class="m_1">此处显示生成图片</span>
+                </div>
+                <img src="" alt="生成图片" id="generated_img" style="display: none;">
+                <div class="progress progress-striped active" id="progress_bar_generated">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                        图片生成中...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="show_example col-md-12" style="border: rgb(228,228,228) 1px solid">
+        <p><span class="m_20">风格迁移范例</span></p><br><br>
+        <div class="example">
+            <div class="col-md-3 show_example_left">
+                <img src="{% static 'images/example01.jpg' %}" alt="example01">
+                <p><span class="m_21">mountain</span></p>
+            </div>
+            <div class="col-md-9 show_example_right">
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_la muse.jpg' %}">
+                    <p><span class="m_21">la muse</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_wave.jpg' %}">
+                    <p><span class="m_21">wave</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_the scream.jpg' %}">
+                    <p><span class="m_21">the scream</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_udnie.jpg' %}">
+                    <p><span class="m_21">udnie</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="example">
+            <div class="col-md-3 show_example_left">
+                <img src="{% static 'images/example02.jpg' %}" alt="example02">
+                <p><span class="m_21">landscape</span></p>
+            </div>
+            <div class="col-md-9 show_example_right">
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_la muse.jpg' %}">
+                    <p><span class="m_21">la muse</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_wave.jpg' %}">
+                    <p><span class="m_21">wave</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_scream.jpg' %}">
+                    <p><span class="m_21">the scream</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_udnie.jpg' %}">
+                    <p><span class="m_21">udnie</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $('#file').change(function () {
+            //显示进度条
+            $('#progress_bar_content').show();
+            $('.before_upload').hide();
+            //若图片大于500k，则调用压缩程序，调整至500k
+            var size = $("#file")[0].files[0].size;
+            var threshold = 500000;
+            if (size > threshold) {
+                var factor = Math.sqrt(threshold / size);
+                compressAndSendAjax(factor);
+            } else {
+                compressAndSendAjax(1);
+            }
+        });
+
+        $('#stylize').click(function () {
+            //若有生成的图片，则隐藏
+            $('#generated_img').attr('src', '');
+            $('#generated_img').hide();
+            //显示进度条
+            $('#progress_bar_generated').show();
+            $('.before_generate').hide();
+            //点击确认，ajax传模板名到后台，再传风格化后的图片路径至页面
+            //获取select值
+            let style_name = $('#select_style option:selected').val();
+
+            //获取图片名
+            let uploaded_img_path = $('#show_img')[0].src;
+            var pos = uploaded_img_path.lastIndexOf("/");
+            var picName = uploaded_img_path.substring(pos + 1);
+
+            //若用户未上传图片
+            if (picName == "") {
+                var alert_no_img = jqueryAlert({
+                    'icon': '{% static "images/warning.png" %}',
+                    'content': '请上传图片',
+                    'closeTime': 2000,
+                });
+                $('#progress_bar_generated').hide();
+                $('.before_generate').show();
+                return alert_no_img.show();
+            } else {
+                var form_data = new FormData();
+                form_data.append('style_name', style_name);
+                form_data.append('picName', picName);
+
+                $.ajax({
+                    url: '{% url "main:transfer" %}',
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        //超时
+                        if (data.status == "time_out") {
+                            var alert_time_out = jqueryAlert({
+                                'icon': '{% static "images/warning.png" %}',
+                                'content': '超时，请重新尝试',
+                                'closeTime': 2000,
+                            });
+                            return alert_time_out.show();
+                        } else if (data.status == "success") {
+                            //隐藏进度条
+                            $('#progress_bar_generated').hide();
+                            var alert_success = jqueryAlert({
+                                'icon': '{% static "images/right.png" %}',
+                                'content': '图像风格化成功',
+                                'closeTime': 2000,
+                            });
+                            //显示风格化后的图像
+                            var picPath = "{% static 'media/download/tmpImages/' %}" + picName;
+                            picPath += '?t=' + (+new Date());
+                            $('#generated_img').attr('src', picPath);
+
+                            //调整宽高
+                            $('#generated_img').css("height", $('#show_img').height());
+                            $('#generated_img').css("width", $('#show_img').width());
+
+                            $('#generated_img').show();
+                            return alert_success.show();
+                        }
+                    },
+                    error: function (data) {
+                        var alert_error = jqueryAlert({
+                            'icon': '{% static "images/error.png" %}',
+                            'content': '网络错误，请重新尝试',
+                            'closeTime': 2000,
+                        });
+                        return alert_error.show();
+                    }
+                })
+            }
+        });
+
+        // 对图片进行压缩
+        function compressAndSendAjax(compress_factor) {
+            let fileObj = document.getElementById('file').files[0]; //上传文件的对象
+            //获取文件名
+            var file = $('#file').val();
+            var fileName = getFileName(file);
+            var hasChinese = isChinese(fileName);
+            if (hasChinese != false) return;
+
+            let reader = new FileReader();
+            reader.readAsDataURL(fileObj);
+            reader.onload = function (e) {
+                let image = new Image(); //新建一个img标签（还没嵌入DOM节点)
+                image.src = e.target.result;
+                image.onload = function () {
+                    let canvas = document.createElement('canvas'),
+                        context = canvas.getContext('2d'),
+                        imageWidth = image.width * compress_factor,
+                        imageHeight = image.height * compress_factor,
+                        data = '';
+
+                    canvas.width = imageWidth;
+                    canvas.height = imageHeight;
+
+                    context.drawImage(image, 0, 0, imageWidth, imageHeight);
+                    data = canvas.toDataURL('image/jpeg');
+
+                    //压缩完成，转换为File对象，并ajax发送
+                    document.getElementById('show_img').src = data;
+                    file_obj = dataURLtoFile(data, fileName);
+
+                    var form_data = new FormData();
+                    form_data.append('file_obj', file_obj);
+
+                    $.ajax({
+                        url: '{% url "main:ajaxUpload" %}',
+                        type: 'POST',
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            //用户没有选择文件
+                            if (data.status == "no_file") {
+                                var alert_no_file = jqueryAlert({
+                                    'icon': '{% static "images/warning.png" %}',
+                                    'content': '请选择图片',
+                                    'closeTime': 2000,
+                                });
+                                return alert_no_file.show();
+                            } else if (data.status == "success") {
+                                //隐藏进度条
+                                $('#progress_bar_content').hide();
+                                var alert_success = jqueryAlert({
+                                    'icon': '{% static "images/right.png" %}',
+                                    'content': '上传成功',
+                                    'closeTime': 2000,
+                                });
+                                var file_name = data.picName;
+                                var picPath = "{% static 'media/upload/tmpImages/' %}" + file_name;
+                                $('#show_img').attr('src', picPath);
+
+                                //图片大小自适应
+                                var maxWidth = $('.showImg').width(); // 图片最大宽度
+                                var maxHeight = $('.showImg').height();    // 图片最大高度
+                                var ratio = 0;  // 缩放比例
+                                var width = $('#show_img').width();    // 图片实际宽度
+                                var height = $('#show_img').height();  // 图片实际高度
+
+                                // 检查图片是否超宽
+                                if (width > maxWidth) {
+                                    ratio = maxWidth / width;   // 计算缩放比例
+                                    $('#show_img').css("width", maxWidth); // 设定实际显示宽度
+                                    width = maxWidth;
+                                    height = height * ratio;    // 计算等比例缩放后的高度
+                                    $('#show_img').css("height", height);  // 设定等比例缩放后的高度
+                                }
+
+                                // 检查图片是否超高
+                                if (height > maxHeight) {
+                                    ratio = maxHeight / height; // 计算缩放比例
+                                    $('#show_img').css("height", maxHeight);   // 设定实际显示高度
+                                    height = maxHeight;
+                                    width = width * ratio;    // 计算等比例缩放后的宽度
+                                    $('#show_img').css("width", width);    // 设定等比例缩放后的宽度
+                                }
+
+                                $('#show_img').show();
+                                return alert_success.show();
+                            }
+                        },
+                        error: function (data) {
+                            var alert_no_file = jqueryAlert({
+                                'icon': '{% static "images/error.png" %}',
+                                'content': '上传错误，请重新尝试',
+                                'closeTime': 2000,
+                            });
+                            //隐藏进度条
+                            $('#progress_bar_generated').hide();
+                            return alert_no_file.show();
+                        }
+                    })
+                };
+            }
+        }
+
+        //获得filename
+        function getFileName(o) {
+            var pos = o.lastIndexOf("\\");
+            return o.substring(pos + 1);
+        }
+
+        //dataurl转file
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {type: mime});
+        }
+
+        //把url作为jump的参数
+        function jump(tarUrl) {
+            window.open(tarUrl);
+        }
+
+        //点击图片弹出新网页观看
+        $('img:not(.logo_image)').click(function () {
+            var path = $(this)[0].src;
+            window.open(path);
+        });
+
+        //风格选择框选择改变
+        $('#select_style').change(function () {
+            var optionValue = $('#select_style').val();
+            var path = "{% static 'images/' %}" + optionValue + ".jpg";
+            $('#style_img').attr('src', path);
+        });
+
+        function isChinese(temp) {
+            var re = /[\u4e00-\u9fa5]/g;
+            if (re.test(temp)) {
+                var alert_is_Chinese = jqueryAlert({
+                    'icon': '{% static "images/warning.png" %}',
+                    'content': '请修改文件名称，不能含有汉字',
+                    'closeTime': 2000,
+                });
+                $('#progress_bar_content').hide();
+                $('.before_upload').show();
+                return alert_is_Chinese.show();
+            } else {
+                //无中文
+                return false;
+            }
+        }
+    </script>
+{% endblock %}

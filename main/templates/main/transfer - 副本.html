@@ -1,0 +1,156 @@
+{% extends "base-main.html" %}
+{% load staticfiles %}
+{% block title %}图像风格迁移{% endblock %}
+
+{% block content %}
+    <div class="transfer">
+        <div class="transfer-left col-md-4">
+            <form enctype="multipart/form-data" action="/main/transfer/" method="post">{% csrf_token %}
+                <span class="m_20">风格迁移操作步骤：</span>
+                <p><span class="m_25"><strong>1、</strong>在本地选择任何jpeg格式的图片（不超过1M）：</span><input type="file" name="myfile"/></p>
+                <p><span class="m_25"><strong>2、</strong>点击</span><input type="submit" value="上传" id="upload" name="upload"/><span class="m_25">，即可上传图片。</span>
+                </p>
+                <p>
+                    <span class="m_25"><strong>3、</strong>选择风格模板：</span>
+                    <label><select name="style_name" id="select_style">
+                        <option value="la_muse" {% if img_style_name == "la_muse" %} selected {% endif %}>la muse
+                        </option>
+                        <option value="rain_princess" {% if img_style_name == "rain_princess" %} selected {% endif %}>
+                            rain princess
+                        </option>
+                        <option value="the_scream" {% if img_style_name == "the_scream" %} selected {% endif %}>the
+                            scream
+                        </option>
+                        <option value="the_shipwreck_of_the_minotaur"
+                                {% if img_style_name == "the_shipwreck_of_the_minotaur" %} selected {% endif %}>the
+                            shipwreck of the minotaur
+                        </option>
+                        <option value="udnie" {% if img_style_name == "udnie" %} selected {% endif %}>udnie</option>
+                        <option value="wave" {% if img_style_name == "wave" %} selected {% endif %}>wave</option>
+                    </select></label>
+{#                    <button id="preview" name="preview">预览</button>#}
+                <div class="show_style_img">
+                    <img src="{% static 'images/' %}{{ img_style_name }}.jpg" alt="请选择风格图片" id="style_img"
+                         onerror="this.src='{% static "images/la_muse.jpg" %}'">
+                </div>
+                </p>
+                <p>
+                    <span class="m_25"><strong>4、</strong>一键风格化：</span>
+                    <button value="确认" name="stylize" id="stylize">确认</button>
+                </p>
+                {% if message %}
+                    <div style="color: red">{{ message }}</div>
+                {% endif %}
+            </form>
+        </div>
+        <div class="transfer-right col-md-8">
+            <div class="showImg col-md-4">
+                <img src="{% static 'media/upload/' %}{{ pic_content_obj.pic }}" alt="请上传图片" id="content_img">
+            </div>
+            <div class="showImg col-md-4">
+                <img src="{% static 'media/download/' %}{{ pic_generated_obj.pic }}" alt="生成图片" id="generated_img">
+            </div>
+        </div>
+    </div>
+
+    <div class="show_example col-md-12" style="border: rgb(228,228,228) 1px solid">
+        <p><span class="m_20">风格迁移范例</span></p><br><br>
+        <div class="example">
+            <div class="col-md-3 show_example_left">
+                <img src="{% static 'images/example01.jpg' %}" alt="example01">
+                <p><span class="m_21">mountain</span></p>
+            </div>
+            <div class="col-md-9 show_example_right">
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_la muse.jpg' %}">
+                    <p><span class="m_21">la muse</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_wave.jpg' %}">
+                    <p><span class="m_21">wave</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_the scream.jpg' %}">
+                    <p><span class="m_21">the scream</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example01_udnie.jpg' %}">
+                    <p><span class="m_21">udnie</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="example">
+            <div class="col-md-3 show_example_left">
+                <img src="{% static 'images/example02.jpg' %}" alt="example02">
+                <p><span class="m_21">landscape</span></p>
+            </div>
+            <div class="col-md-9 show_example_right">
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_la muse.jpg' %}">
+                    <p><span class="m_21">la muse</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_wave.jpg' %}">
+                    <p><span class="m_21">wave</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_scream.jpg' %}">
+                    <p><span class="m_21">the scream</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example02_udnie.jpg' %}">
+                    <p><span class="m_21">udnie</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="example">
+            <div class="col-md-3 show_example_left">
+                <img src="{% static 'images/example03.jpg' %}" alt="example03">
+                <p><span class="m_21">river</span></p>
+            </div>
+            <div class="col-md-9 show_example_right">
+                <div class="col-md-3">
+                    <img src="{% static 'images/example03_la muse.jpg' %}">
+                    <p><span class="m_21">la muse</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example03_wave.jpg' %}">
+                    <p><span class="m_21">wave</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example03_scream.jpg' %}">
+                    <p><span class="m_21">the scream</span></p>
+                </div>
+                <div class="col-md-3">
+                    <img src="{% static 'images/example03_udnie.jpg' %}">
+                    <p><span class="m_21">udnie</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        //把url作为jump的参数
+        function jump(tarUrl) {
+            window.open(tarUrl);
+        }
+
+        //点击图片弹出新网页观看
+        $('img:not(.logo_image)').click(function () {
+            var path = $(this)[0].src;
+            window.open(path);
+        });
+
+        //风格选择框选择改变
+        $('#select_style').change(function () {
+            var optionValue = $('#select_style').val();
+            var path = "{% static 'images/' %}" + optionValue + ".jpg";
+            $('#style_img').attr('src', path);
+        });
+
+        //若点击确定，则显示加载gif
+        $('#stylize').click(function () {
+            $('#generated_img').attr('src','{% static "images/loading.gif" %}');
+        });
+    </script>
+{% endblock %}

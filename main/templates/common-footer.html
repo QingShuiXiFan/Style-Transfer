@@ -1,0 +1,43 @@
+{% load staticfiles %}
+
+<div class="footer">
+    <div class="container">
+        <div class="col-md-3 box_1">
+            <img src="{% static "images/f_logo.png" %}" alt=""/>
+            <p>Copyright &copy; 2019. Style Transfer All rights reserved.苏ICP备19005776号</p>
+        </div>
+        <div class="col-md-3 box_2">
+            <h4>快速链接</h4>
+            <ul class="list_2">
+                <li><a href="{% url 'main:index' %}">主页</a></li>
+                <li><a href="{% url 'main:transfer' %}">风格迁移</a></li>
+                <li><a href="{% url 'main:style2paint' %}">线稿上色</a></li>
+            </ul>
+            <ul class="list_2">
+                <li><a href="{% url 'main:about' %}">关于</a></li>
+                <li><a href="{% url 'main:faq' %}">FAQ</a></li>
+                <li><a href="{% url 'main:support' %}">支持</a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-md-3 box_2">
+            <h4>联系我们</h4>
+            <address class="address">
+                <dl>
+                    <dt></dt>
+                    <dd>通讯地址 : <span>湖北省武汉市武昌区和平大道1178号武汉理工大学</span></dd>
+                    <dd>电子邮箱 : <a href="mailto:styletransfer@163.com">styletransfer@163.com</a></dd>
+                </dl>
+            </address>
+        </div>
+        <div class="col-md-3 box_2">
+            <h4>社交媒体</h4>
+            <ul class="footer_social">
+                <li><a href=""> <i class="weibo"> </i> </a></li>
+                <li><a href=""><i class="wechat"> </i> </a></li>
+                <li><a href=""><i class="QQ"> </i> </a></li>
+                <li><a href=""><i class="github"> </i> </a></li>
+            </ul>
+        </div>
+    </div>
+</div>

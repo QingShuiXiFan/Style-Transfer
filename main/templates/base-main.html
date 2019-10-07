@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    {# 添加小图标 #}
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon"/>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content="Hosting Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template,
+    Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design"/>
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <link href="{% static  'css/bootstrap.css' %}" rel='stylesheet' type='text/css'/>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <!-- Custom Theme files -->
+    <link href="{% static "css/style.css" %}" rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="{% static 'css/alert.css' %}">
+    <!-- Custom Theme files -->
+    <!-- webfonts -->
+    <!-- Add fancyBox main JS and CSS files -->
+    {#    <script type="text/javascript" src="{% static 'js/language.js' %}"></script>#}
+    <script type="text/javascript" src="{% static 'js/prompt.js' %}"></script>
+    <script src='{% static "js/alert.js" %}'></script>
+</head>
+<body>
+{% include "common-header.html" %}
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+{% include "common-footer.html" %}
+{#中英切换翻译js#}
+{#<script type="text/javascript">#}
+{#    $("#change").click(function () {#}
+{#        translate();#}
+{#    })#}
+{#</script>#}
+</body>
+</html>

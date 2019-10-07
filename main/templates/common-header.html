@@ -1,0 +1,46 @@
+{% load staticfiles %}
+
+<div class="header">
+    <div class="container">
+        <div class="header_top">
+            <div class="logo">
+                <a href="{% url 'index' %}"><img src="{% static "images/logo.png" %}" alt="logo" class="logo_image"/></a>
+            </div>
+            <div class="cssmenu">
+                <ul>
+                    {% if request.user.is_authenticated %}
+{#                        需要修改#}
+                        <div class="dropdown">
+                            <span>{{ user.username }}</span>
+                            <div class="dropdown-content">
+                                <p><a href="#">我的仓库</a></p>
+                                <p><a href="#">个人中心</a></p>
+                            </div>
+                        </div>
+                        <li><a href="{% url 'main:user_logout' %}">登出</a></li>
+                    {% else %}
+                        <li><a href="{% url 'main:user_login' %}">登录</a></li>
+                        <li><a href="{% url 'main:register' %}">注册</a></li>
+                    {% endif %}
+                    <li>
+{#                        <button id="change">中/英</button>#}
+                    </li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="h_menu4"><!-- start h_menu4 -->
+            <a class="toggleMenu" href="#">Menu</a>
+            <ul class="nav">
+                <li><a href="{% url 'main:index' %}">首页</a></li>
+                <li><a href="{% url 'main:transfer' %}">风格迁移</a></li>
+                <li><a href="{% url 'main:style2paint' %}">线稿上色</a></li>
+                <li><a href="{% url 'main:about' %}">关于</a></li>
+                <li><a href="{% url 'main:faq' %}">FAQ</a></li>
+                <li><a href="{% url 'main:support' %}">支持</a></li>
+            </ul>
+            <script type="text/javascript" src="{% static "js/nav.js" %}"></script>
+        </div><!-- end h_menu4 -->
+    </div>
+</div>
+
