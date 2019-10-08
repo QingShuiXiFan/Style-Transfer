@@ -28,4 +28,4 @@ python manage.py runserver
 6. open a browser, visit http://127.0.0.1:8000/ <br>
 **ENJOY IT**
 
-Paper for this project is 
+Paper for this project is [here](https://github.com/QingShuiXiFan/Style-Transfer/blob/master/paper/20190530-%E8%89%BA%E6%9C%AF%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB%E7%BD%91%E7%AB%99%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0%E2%80%94%E2%80%94%E6%AF%95%E4%B8%9A%E8%AE%BA%E6%96%87.pdf)
