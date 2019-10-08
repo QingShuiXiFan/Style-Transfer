@@ -20,9 +20,12 @@ pip install Paste 3.0.8
 pip install opencv-python 4.0.0.21
 pip install Scikit-image 0.14.2
 ```
-5. run websites offline:
+5. download vgg from [here](https://drive.google.com/open?id=1Q5MnOVDGfEcNGVy5AKs2y9jHd92URssG), and put it in ../Style-transfer/fast-style-transfer-master/data/.
+5. run website offline:
 ```
 python manage.py runserver
 ```
 6. open a browser, visit http://127.0.0.1:8000/ <br>
 **ENJOY IT**
+
+Paper for this project is 
