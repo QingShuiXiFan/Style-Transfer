@@ -27,3 +27,5 @@ python manage.py runserver
 ```
 6. open a browser, visit http://127.0.0.1:8000/ <br>
 **ENJOY IT**
+
+Paper for this project is 
